@@ -8,7 +8,7 @@ metadata:
     nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
 spec:
   rules:
-  - host: php-hello-world.gusek.info
+  - host: php-hello-world.apps.gusek.info
     http:
       paths:
       - path: /
