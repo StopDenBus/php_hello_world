@@ -12,4 +12,4 @@ resources:
 images:
 - name: php-hello-world-image
   newName: docker.pkg.github.com/stopdenbus/php_hello_world/hello_world
-  newTag: 9a96e457f39d67c68f857b88983e59361007b39f
+  newTag: 9a511ef13b050867f474fd65e99c6bf7c8d0d597
