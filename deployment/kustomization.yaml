@@ -10,6 +10,6 @@ resources:
 - Ingress.yaml
 
 images:
-- name: php-hello-world
+- name: php-hello-world-image
   newName: docker.pkg.github.com/stopdenbus/php_hello_world/hello_world
   newTag: 59e436b15191e873e8074c7b272333e31c5f8047
