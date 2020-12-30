@@ -1,0 +1,15 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: stuff
+commonLabels:
+  app: php_hello_world
+
+resources:
+  - Deployment.yaml
+  - Service.yaml
+  - Ingress.yaml
+
+images:
+  - name: php-hello-world
+    newName: docker.pkg.github.com/stopdenbus/php_hello_world/hello_world
+    newTag: latest
