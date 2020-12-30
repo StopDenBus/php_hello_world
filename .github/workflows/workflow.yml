@@ -16,7 +16,7 @@ jobs:
       - name: Build Image
         uses: vrutkovs/action-s2i@master
         with:
-          base: centos7/php-73-centos7
+          base: centos/php-73-centos7
           image: hello_world:${{ github.sha }}
 
       - name: Login to registry
