@@ -1,0 +1,36 @@
+name: Hello World CI
+
+on:
+  push:
+    branches: [ master, main ]
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Build Image
+        uses: vrutkovs/action-s2i@master
+        with:
+          base: centos7/php-73-centos7
+          image: hello_world:${{ github.sha }}
+
+      - name: Login to registry
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login docker.pkg.github.com -u ${{ github.actor }} --password-stdin
+      
+      - name: Push image
+        run: |
+          REPO=${{ github.repository }}
+          
+          # Change all uppercase to lowercase
+          REPO=$(echo $REPO | tr '[A-Z]' '[a-z]')
+          
+          # Tag image
+          docker tag hello_world:${{ github.sha }} docker.pkg.github.com/$REPO/hello_world:${{ github.sha }}
+          echo "$(docker image ls)"
+          # Push image to registry
+          docker push docker.pkg.github.com/$REPO/hello_world:${{ github.sha }}
