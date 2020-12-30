@@ -5,11 +5,11 @@ commonLabels:
   app: php_hello_world
 
 resources:
-  - Deployment.yaml
-  - Service.yaml
-  - Ingress.yaml
+- Deployment.yaml
+- Service.yaml
+- Ingress.yaml
 
 images:
-  - name: php-hello-world
-    newName: docker.pkg.github.com/stopdenbus/php_hello_world/hello_world
-    newTag: latest
+- name: php-hello-world
+  newName: docker.pkg.github.com/stopdenbus/php_hello_world/hello_world
+  newTag: 59e436b15191e873e8074c7b272333e31c5f8047
