@@ -20,7 +20,7 @@ jobs:
           image: hello_world:${{ github.sha }}
 
       - name: Login to registry
-        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login docker.pkg.github.com -u ${{ github.actor }} --password-stdin
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
       
       - name: Push image
         run: |
@@ -30,10 +30,10 @@ jobs:
           REPO=$(echo $REPO | tr '[A-Z]' '[a-z]')
           
           # Tag image
-          docker tag hello_world:${{ github.sha }} docker.pkg.github.com/$REPO/hello_world:${{ github.sha }}
+          docker tag hello_world:${{ github.sha }} ghcr.io/$REPO/hello_world:${{ github.sha }}
           echo "$(docker image ls)"
           # Push image to registry
-          docker push docker.pkg.github.com/$REPO/hello_world:${{ github.sha }}
+          docker push ghcr.io/$REPO/hello_world:${{ github.sha }}
   deploy:
     name: Deploy
     runs-on: ubuntu-latest
@@ -51,7 +51,7 @@ jobs:
     - name: Update Kubernetes resources
       run: |
        cd deployment
-       kustomize edit set image php-hello-world-image=docker.pkg.github.com/stopdenbus/php_hello_world/hello_world:${{ github.sha }}
+       kustomize edit set image php-hello-world-image=ghcr.io/stopdenbus/php_hello_world/hello_world:${{ github.sha }}
         
     - name: Commit files
       run: |

@@ -11,5 +11,5 @@ resources:
 
 images:
 - name: php-hello-world-image
-  newName: docker.pkg.github.com/stopdenbus/php_hello_world/hello_world
+  newName: ghcr.io/stopdenbus/php_hello_world/hello_world
   newTag: 561ea5be9a6caa9c3093c3511405a9e24eaeeb3b
