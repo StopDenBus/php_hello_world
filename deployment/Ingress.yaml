@@ -1,4 +1,4 @@
-apiVersion: networking.k8s.io/v1beta1
+apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: php-hello-world-ingress
@@ -15,7 +15,10 @@ spec:
     - host: php-hello-world.apps.gusek.info
       http:
         paths:
-        - path: /
-          backend:
-            serviceName: php-hello-world-service
-            servicePort: http
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: php-hello-world-service
+                port:
+                  number: 8080
