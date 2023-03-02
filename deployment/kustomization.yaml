@@ -12,4 +12,4 @@ resources:
 images:
 - name: php-hello-world-image
   newName: ghcr.io/stopdenbus/php_hello_world/hello_world
-  newTag: cd601d3f67cdefb1a2d026d465cd60d756593c06
+  newTag: 085d83961dcdb2d596638e6e98173ce58490ce5e
