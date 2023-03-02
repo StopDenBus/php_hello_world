@@ -9,10 +9,10 @@ metadata:
 spec:
   tls:
     - hosts:
-        - php-hello-world.apps.gusek.info
+        - php-hello-world.gusek.info
       secretName: wildcard-apps 
   rules:
-    - host: php-hello-world.apps.gusek.info
+    - host: php-hello-world.gusek.info
       http:
         paths:
           - path: /
