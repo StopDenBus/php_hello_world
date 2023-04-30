@@ -11,11 +11,24 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2.5.0 # Checking out the repo
+
+      - name: Docker meta
+        uses: docker/metadata-action@v4
+        id: meta
+        with:
+          images: |
+            stopdenbus/php_hello_world
+          tags: |
+            type=ref,event=branch
+            type=ref,event=pr
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}      
       
       - name: Build and publish Docker image tagged according to a git-tag
         uses: VaultVulp/gp-docker-action@1.6.0
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }} # Provide GITHUB_TOKEN to login into the GitHub Packages
           image-name: php-hello-world # Provide only Docker image name
-          extract-git-tag: true # Provide flag to extract Docker image tag from git reference
+          image-tag: ${{ steps.meta.outputs.tags }}  # Provide Docker image tag
+          # extract-git-tag: true # Provide flag to extract Docker image tag from git reference
           build-context: ./container # Provide path to the folder with a Dockerfile
