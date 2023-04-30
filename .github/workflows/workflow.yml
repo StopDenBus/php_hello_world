@@ -18,3 +18,4 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }} # Provide GITHUB_TOKEN to login into the GitHub Packages
           image-name: php-hello-world # Provide only Docker image name
           extract-git-tag: true # Provide flag to extract Docker image tag from git reference
+          build-context: ./container # Provide path to the folder with a Dockerfile
