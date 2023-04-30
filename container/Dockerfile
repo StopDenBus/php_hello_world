@@ -1,1 +1,1 @@
-FROM ubi8/php-81
+FROM centos/php-73-centos7
