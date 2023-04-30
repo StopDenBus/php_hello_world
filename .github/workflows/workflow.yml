@@ -1,65 +1,20 @@
-name: Hello World CI
+name: Build and publish
 
-on:
+on: 
   push:
-    branches: [ master, main ]
+    tags:
+      - "*" # Running this workflow for any tag
 
 jobs:
-  build:
-    name: Build
+  build-and-publish-tag:
     runs-on: ubuntu-latest
-    
+
     steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-
-      - name: Build Image
-        uses: vrutkovs/action-s2i@master
-        with:
-          base: centos/php-73-centos7
-          image: hello_world:${{ github.sha }}
-
-      - name: Login to registry
-        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+      - uses: actions/checkout@v2.5.0 # Checking out the repo
       
-      - name: Push image
-        run: |
-          REPO=${{ github.repository }}
-          
-          # Change all uppercase to lowercase
-          REPO=$(echo $REPO | tr '[A-Z]' '[a-z]')
-          
-          # Tag image
-          docker tag hello_world:${{ github.sha }} ghcr.io/$REPO/hello_world:${{ github.sha }}
-          echo "$(docker image ls)"
-          # Push image to registry
-          docker push ghcr.io/$REPO/hello_world:${{ github.sha }}
-  deploy:
-    name: Deploy
-    runs-on: ubuntu-latest
-    needs: build
-
-    steps:
-    - name: Check out code
-      uses: actions/checkout@v2
-
-    - name: Setup Kustomize
-      uses: imranismail/setup-kustomize@v1
-      with:
-        kustomize-version: "3.6.1"
-
-    - name: Update Kubernetes resources
-      run: |
-       cd deployment
-       kustomize edit set image php-hello-world-image=ghcr.io/stopdenbus/php_hello_world/hello_world:${{ github.sha }}
-        
-    - name: Commit files
-      run: |
-        git config --local user.email "action@github.com"
-        git config --local user.name "GitHub Action"
-        git commit -am "Bump docker tag"
-    - name: Push changes
-      uses: ad-m/github-push-action@master
-      with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-        branch: ${{ github.ref }}     
+      - name: Build and publish Docker image tagged according to a git-tag
+        uses: VaultVulp/gp-docker-action@1.6.0
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }} # Provide GITHUB_TOKEN to login into the GitHub Packages
+          image-name: php-hello-world # Provide only Docker image name
+          extract-git-tag: true # Provide flag to extract Docker image tag from git reference
