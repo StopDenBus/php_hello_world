@@ -1,0 +1,14 @@
+apiVersion: v1
+entries:
+  php-hello-world:
+  - apiVersion: v2
+    appVersion: 0.0.1
+    created: "2023-04-30T21:35:08.797424211Z"
+    description: A hello world app written in PHP
+    digest: 19a6309bcea2040d63ddfa6479b2d9fb27d7aa26540a8d41c759f8091e933bf3
+    name: php-hello-world
+    type: application
+    urls:
+    - https://github.com/StopDenBus/php_hello_world/releases/download/php-hello-world-0.0.3/php-hello-world-0.0.3.tgz
+    version: 0.0.3
+generated: "2023-04-30T21:35:08.797430811Z"
