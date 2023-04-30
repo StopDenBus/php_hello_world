@@ -6,7 +6,7 @@ on:
       - "*" # Running this workflow for any tag
 
 jobs:
-  build-and-publish-tag:
+  image-build-and-publish-tag:
     runs-on: ubuntu-latest
 
     steps:
@@ -44,3 +44,41 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
+  
+  pump-chart-version:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v3
+      
+      - name: Docker meta
+        uses: docker/metadata-action@v4
+        id: meta
+        with:
+          images: |
+            ghcr.io/stopdenbus/php_hello_world/php-hello-world
+          flavor: |
+              latest=false
+          tags: |
+            type=semver,pattern={{version}}
+      
+      - name: Set chart version
+        env:
+          CHART_VERSION: ${{ steps.meta.outputs.version }}
+        run: |
+          echo "set chart version to ${CHART_VERSION}"
+          yq eval '.version=env(CHART_VERSION)' -i ./charts/php_hello_world/Chart.yaml
+
+      - name: Commit files
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git commit -am "Bump chart version"
+
+      - name: Push changes
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: main
+
