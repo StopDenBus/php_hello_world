@@ -18,7 +18,7 @@ jobs:
         with:
           images: |
             stopdenbus/php_hello_world
-            flavor: |
+          flavor: |
               latest=false
           tags: |
             type=semver,pattern={{version}}    
