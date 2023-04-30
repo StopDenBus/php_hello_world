@@ -18,11 +18,10 @@ jobs:
         with:
           images: |
             stopdenbus/php_hello_world
+            flavor: |
+              latest=false
           tags: |
-            type=ref,event=branch
-            type=ref,event=pr
-            type=semver,pattern={{version}}
-            type=semver,pattern={{major}}.{{minor}}      
+            type=semver,pattern={{version}}    
       
       - name: Build and publish Docker image tagged according to a git-tag
         uses: VaultVulp/gp-docker-action@1.6.0
