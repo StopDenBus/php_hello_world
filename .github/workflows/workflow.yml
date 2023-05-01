@@ -52,31 +52,26 @@ jobs:
     steps:
       - name: Check out the repo
         uses: actions/checkout@v3
-        # with:
-        #   ref: main
+        with:
+          repository: 'https://github.com/StopDenBus/helm-charts.git'
+          token: ${{ secrets.DEPLOY_TOKEN }}
+          ref: main
 
       - name: Set chart version
         env:
           CHART_VERSION: ${{ needs.image-build-and-publish-tag.outputs.version }}
         run: |
           echo "set chart version to ${CHART_VERSION}"
-          yq eval '.version=env(CHART_VERSION)' -i ./charts/php_hello_world/Chart.yaml
+          yq eval '.version=env(CHART_VERSION)' -i ./charts/php-hello-world/Chart.yaml
 
       - name: Commit files
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
-          git commit -am "Bump chart version"   
-              
-      - name: Run chart-releaser
-        uses: helm/chart-releaser-action@v1.5.0
-        with:
-          charts_dir: charts
-        env:
-          CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"            
+          git commit -am "Bump chart version"                
 
       - name: Push changes
         uses: ad-m/github-push-action@master
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+          github_token: ${{ secrets.DEPLOY_TOKEN }}
 
