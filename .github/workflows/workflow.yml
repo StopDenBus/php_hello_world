@@ -8,7 +8,8 @@ on:
 jobs:
   image-build-and-publish-tag:
     runs-on: ubuntu-latest
-
+    outputs:
+      version: ${{ steps.meta.outputs.version }}
     steps:
       - name: Check out the repo
         uses: actions/checkout@v3
@@ -44,10 +45,19 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-      
+  
+  update_chart_version:
+    runs-on: ubuntu-latest
+    needs: image-build-and-publish-tag
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v3
+        with:
+          ref: main
+
       - name: Set chart version
         env:
-          CHART_VERSION: ${{ steps.meta.outputs.version }}
+          CHART_VERSION: ${{ needs.image-build-and-publish-tag.outputs.version }}
         run: |
           echo "set chart version to ${CHART_VERSION}"
           yq eval '.version=env(CHART_VERSION)' -i ./charts/php_hello_world/Chart.yaml
@@ -62,6 +72,4 @@ jobs:
         uses: ad-m/github-push-action@master
         with:
           github_token: ${{ secrets.GITHUB }}
-          branch: main
-          force_with_lease: true
 
