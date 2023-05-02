@@ -8,7 +8,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Dump job github var
-        if: ${{ github.created }}
+        if: ${{ github.event.created }}
         env:
           GITHUB_VAR: ${{ toJson(github) }}
         run: echo "$GITHUB_VAR"
