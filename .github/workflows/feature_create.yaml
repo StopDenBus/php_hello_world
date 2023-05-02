@@ -1,33 +1,57 @@
-name: create feature deployment
+name: Create or update feature deployment
 on:
   push:
     branches:
       - "feature/**"
 jobs:
-  update-tag:
+  image-build-and-publish-tag:
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.meta.outputs.version }}
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v3 
+      
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v2
+      
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+      
+      - name: Login to GHCR
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Build and push
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          push: true
+          tags: ${{ github.sha }}
+
+  create-or-update-feature-deployment:
     runs-on: ubuntu-latest
     steps:
-      - if: ${{ github.event.created }}
-        name: Check out the repo
+      - name: Check out the repo
         uses: actions/checkout@v3
         with:
           repository: 'StopDenBus/helm-charts'
           token: ${{ secrets.DEPLOY_TOKEN }}
           ref: main
 
-      - if: ${{ github.event.created }}
-        name: Create feature deployment
+      - name: Create feature deployment
         run: |
           echo "set chart version to ${CHART_VERSION}"
           yq '.applications.php-hello-world.featureBranches.${{ github.ref_name }} = {"tag": "${{ github.sha }}"}' -i charts/applications/values.yaml 
 
-      - if: ${{ github.event.created }}
-        name: Commit files
+      - name: Commit files
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
           git commit -am "Bump chart version"
       
-      - if: ${{ github.event.created }}
-        run: git push origin main
+      - run: git push origin main
 
