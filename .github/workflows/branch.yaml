@@ -2,9 +2,7 @@ name: create feature deployment
 on:
   push:
     branches:
-      - "feature/**"        
-    types:
-      - created
+      - "feature/**"
 jobs:
   echo:
     runs-on: ubuntu-latest
