@@ -1,14 +1,13 @@
 name: create feature deployment
 on:
-    push:
-        branches:
-            - "feature/**"        
-        types:
-            - created
+  push:
+    branches:
+      - "feature/**"        
+    types:
+      - created
 jobs:
-    echo:
-        name: Echo
-        if: github.event.push.created == true
-        steps:
-            - name: Echo
-              run: echo "Hello World $GITHUB_REF_NAME"
+  echo:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Echo
+        run: echo "Hello World $GITHUB_REF_NAME"
