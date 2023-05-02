@@ -1,0 +1,33 @@
+name: create feature deployment
+on:
+  push:
+    branches:
+      - "feature/**"
+jobs:
+  update-tag:
+    runs-on: ubuntu-latest
+    steps:
+      - if: ${{ github.event.created }}
+        name: Check out the repo
+        uses: actions/checkout@v3
+        with:
+          repository: 'StopDenBus/helm-charts'
+          token: ${{ secrets.DEPLOY_TOKEN }}
+          ref: main
+
+      - if: ${{ github.event.created }}
+        name: Create feature deployment
+        run: |
+          echo "set chart version to ${CHART_VERSION}"
+          yq '.applications.php-hello-world.featureBranches.${{ github.ref_name }} = {"tag": "${{ github.sha }}"}' -i charts/applications/values.yaml 
+
+      - if: ${{ github.event.created }}
+        name: Commit files
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git commit -am "Bump chart version"
+      
+      - if: ${{ github.event.created }}
+        run: git push origin main
+
