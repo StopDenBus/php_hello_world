@@ -46,7 +46,7 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
   
-  update_chart_version:
+  update-chart-version:
     runs-on: ubuntu-latest
     needs: image-build-and-publish-tag
     steps:
