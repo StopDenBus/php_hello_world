@@ -60,7 +60,7 @@ jobs:
           echo "set tag for feature branch"
           yq '.applications.php-hello-world.featureBranches.${{ github.ref_name }} = {"tag": "${{ github.sha }}"}' -i charts/applications/values.yaml
           echo "increase application chart version"
-          yq '.version |= (split(".") | .[-1] |= ((. tag = "!!int") + 1) | join("."))' -i charts/applications/Chart.yml
+          yq '.version |= (split(".") | .[-1] |= ((. tag = "!!int") + 1) | join("."))' -i charts/applications/Chart.yaml
           echo "activate new application chart version"
           yq '.spec.source.targetRevision |= (split(".") | .[-1] |= ((. tag = "!!int") + 1) | join("."))' applications.yaml
 
