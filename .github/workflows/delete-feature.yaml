@@ -3,6 +3,7 @@ on: delete
 
 jobs:
   delete-feature-deployment:
+    if: ${{ (github.event.ref_type == 'branch') && (startsWith(github.event.ref, 'feature/')) }}
     runs-on: ubuntu-latest
     steps:
       - name: Dump GitHub context
