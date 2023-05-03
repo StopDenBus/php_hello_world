@@ -11,7 +11,18 @@ jobs:
       version: ${{ steps.meta.outputs.version }}
     steps:
       - name: Check out the repo
-        uses: actions/checkout@v3 
+        uses: actions/checkout@v3
+      
+      - name: Docker meta
+        uses: docker/metadata-action@v4
+        id: meta
+        with:
+          images: |
+            ghcr.io/stopdenbus/php_hello_world/php-hello-world
+          flavor: |
+              latest=false
+          tags: ${{ github.sha }}
+        
       
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
@@ -31,7 +42,7 @@ jobs:
         with:
           context: .
           push: true
-          tags: ${{ github.sha }}
+          tags: ${{ steps.meta.outputs.tags }}
 
   create-or-update-feature-deployment:
     if: ${{ !github.event.deleted }}
