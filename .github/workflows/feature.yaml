@@ -23,7 +23,6 @@ jobs:
               latest=false
           tags: ${{ github.sha }}
         
-      
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
       
