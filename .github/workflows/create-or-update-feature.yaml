@@ -67,26 +67,3 @@ jobs:
           git commit -am "Bump chart version"
       
       - run: git push origin main
-
-  delete-feature-deployment:
-    if: ${{ github.event.deleted }}
-    runs-on: ubuntu-latest
-    steps:
-      - name: Check out the repo
-        uses: actions/checkout@v3
-        with:
-          repository: 'StopDenBus/helm-charts'
-          token: ${{ secrets.DEPLOY_TOKEN }}
-          ref: main
-      - name: Delete feature deployment
-        run: |
-          yq 'del(.applications.php-hello-world.featureBranches.${{ github.ref_name }})' -i charts/applications/values.yaml
-
-      - name: Commit files
-        run: |
-          git config --local user.email "action@github.com"
-          git config --local user.name "GitHub Action"
-          git commit -am "Bump chart version"
-        
-      - run: git push origin main
-               
