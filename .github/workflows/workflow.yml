@@ -59,10 +59,18 @@ jobs:
 
       - name: Set chart version
         env:
-          CHART_VERSION: ${{ needs.image-build-and-publish-tag.outputs.version }}
+          APP_VERSION: ${{ needs.image-build-and-publish-tag.outputs.version }}
         run: |
-          echo "set chart version to ${CHART_VERSION}"
-          yq eval '.appVersion=env(CHART_VERSION)' -i ./charts/php-hello-world/Chart.yaml
+          echo "update app version to ${APP_VERSION}"
+          yq eval '.appVersion=env(APP_VERSION)' -i ./charts/php-hello-world/Chart.yaml
+          echo "update chart version"
+          yq eval '.version |= (split(".") | .[-1] |= ((. tag = "!!int") + 1) | join("."))' -i ./charts/php-hello-world/Chart.yaml
+          echo "update new chart version in application app"
+          yq eval '.applications.php-hello-world.targetRevision |= (split(".") | .[-1] |= ((. tag = "!!int") + 1) | join("."))' -i ./charts/applications/values.yaml
+          echo "increase application helm chart version"
+          yq eval '.version |= (split(".") | .[-1] |= ((. tag = "!!int") + 1) | join("."))' -i ./charts/applications/Chart.yaml
+          echo "activate new application chart version"
+          yq '.spec.source.targetRevision |= (split(".") | .[-1] |= ((. tag = "!!int") + 1) | join("."))' ./applications.yaml
 
       - name: Commit files
         run: |

@@ -14,8 +14,12 @@ jobs:
           ref: main
       - name: Delete feature deployment
         run: |
+          echo "Delete feature branch"
           yq 'del(.applications.php-hello-world.featureBranches.${{ github.event.ref }})' -i charts/applications/values.yaml
-
+          echo "increase application helm chart version"
+          yq eval '.version |= (split(".") | .[-1] |= ((. tag = "!!int") + 1) | join("."))' -i ./charts/applications/Chart.yaml
+          echo "activate new application helm chart version"
+          yq '.spec.source.targetRevision |= (split(".") | .[-1] |= ((. tag = "!!int") + 1) | join("."))' ./applications.yaml
       - name: Commit files
         run: |
           git config --local user.email "action@github.com"
