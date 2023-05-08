@@ -41,10 +41,11 @@ jobs:
       - name: Build and push
         uses: docker/build-push-action@v4
         with:
-          context: .
+          context: ./container
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
+          file: Dockerfile.fedora
   
   update-chart-version:
     runs-on: ubuntu-latest
