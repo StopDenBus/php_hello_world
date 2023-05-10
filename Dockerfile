@@ -67,15 +67,23 @@ ENV PHP_CONTAINER_SCRIPTS_PATH=/usr/share/container-scripts/php/ \
     HTTPD_VAR_PATH=/var
 
 # Copy the S2I scripts from the specific language image to $STI_SCRIPTS_PATH
-COPY ./s2i/bin/ $STI_SCRIPTS_PATH
+COPY ./container/s2i/bin/ $STI_SCRIPTS_PATH
 
 # Copy extra files to the image.
-COPY ./root/ /
+COPY ./container/root/ /
 
 # Reset permissions of filesystem to default values
 RUN /usr/libexec/container-setup && rpm-file-permissions
 
+# Add application sources to a directory that the assemble script expects them
+# and set permissions so that the container runs without root access
+USER 0
+ADD ./src/index.php /tmp/src/index.php
+RUN chown -R 1001:0 /tmp/src
 USER 1001
 
-# Set the default CMD to print the usage of the language image
-CMD $STI_SCRIPTS_PATH/usage
+# Install the dependencies
+RUN /usr/libexec/s2i/assemble
+
+# Set the default command for the resulting image
+CMD /usr/libexec/s2i/run
