@@ -62,7 +62,7 @@ jobs:
           echo "increase application chart version"
           yq '.version |= (split(".") | .[-1] |= ((. tag = "!!int") + 1) | join("."))' -i charts/applications/Chart.yaml
           echo "activate new application chart version"
-          yq '.spec.source.targetRevision |= (split(".") | .[-1] |= ((. tag = "!!int") + 1) | join("."))' applications.yaml
+          yq '.spec.source.targetRevision |= (split(".") | .[-1] |= ((. tag = "!!int") + 1) | join("."))' -i applications.yaml
 
       - name: Commit files
         run: |
